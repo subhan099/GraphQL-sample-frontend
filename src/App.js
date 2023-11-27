@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useQuery, gql } from "@apollo/client";
+const query = gql`
+  query GetAllTodos {
+    getTodos {
+      id
+      title
+      completed
+      user {
+        id
+        name
+      }
+    }
+  }
+`;
 
 function App() {
+  const { data, loading } = useQuery(query);
+  if (loading) {
+    return <h1>Loading...</h1>;
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="box">
+        {data.getTodos.map((todo, index) => (
+          <div key={index}>
+            <h1>Title: {todo.title}</h1>
+            <h1>ID: {todo.user.name}</h1>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
